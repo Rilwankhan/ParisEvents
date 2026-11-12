@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paris Event organization</title>
+
+  <!-- Poppins Typography (Weights 300-700 + Italics) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#0c0b0e',
+            surface: '#16141a',
+            surfaceLight: '#1f1c25',
+            ivory: '#f5f2eb',
+            gold: '#c9a86a',
+            goldLight: '#e2c792',
+            stone: '#8c857b'
+          },
+          fontFamily: {
+            serif: ['"Poppins"', 'system-ui', 'sans-serif'],
+            sans: ['"Poppins"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Three.js r128 + OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  
+</head>
+<body class="bg-obsidian text-ivory font-sans selection:bg-gold selection:text-obsidian">
+
+  <!-- =====================================================================
+       AMBIENT FULL-SCREEN 3D GALLERY STAGE (GSAP ScrollTrigger Controlled)
+       ===================================================================== -->
+  <div id="hero-canvas-container" aria-hidden="true"></div>
+  <div id="ambient-vignette" class="fixed inset-0 pointer-events-none z-[1] bg-gradient-to-b from-obsidian/55 via-obsidian/45 to-obsidian transition-opacity duration-500"></div>
+
+  <!-- =====================================================================
+       PERFECTLY ALIGNED 3-COLUMN DESKTOP / 2-COLUMN MOBILE HEADER
+       ===================================================================== -->
+  <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-ivory/10 bg-obsidian/85 backdrop-blur-md">
+    <div class="navbar-inner">
+      <!-- Left Column: Brand Identity -->
+      <div class="flex items-center justify-start min-w-0">
+        <a href="#hero-section" class="inline-flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div class="w-9 h-9 rounded-full border border-gold/60 flex items-center justify-center bg-surface group-hover:border-gold transition-colors shrink-0">
+            <span class="text-gold text-sm font-semibold tracking-wider">AL</span>
+          </div>
+          <div class="min-w-0">
+            <span class="text-sm sm:text-base lg:text-lg tracking-[0.14em] text-ivory font-semibold block leading-none truncate">PARIS EVENT DECORATIONS</span>
+            <span class="text-[10px] uppercase tracking-[0.18em] text-stone hidden sm:block mt-1 font-normal">Event Scenography &amp; 3D Studio</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Column: Mathematically Centered Desktop Navigation -->
+      <nav aria-label="Primary Navigation" class="hidden lg:flex items-center justify-center gap-7 text-xs font-medium uppercase tracking-[0.14em] text-ivory/85">
+        <a href="#categories-section" class="nav-link inline-flex items-center gap-2 hover:text-gold transition-colors py-2"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" stroke-width="1.8" d="M12 3 3 7.5l9 4.5 9-4.5L12 3ZM3 12l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" /></svg>Categories</a>
+        <a href="#gallery-section" class="nav-link inline-flex items-center gap-2 hover:text-gold transition-colors py-2"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke-width="1.8" /><circle cx="8.5" cy="9" r="1.25" stroke-width="1.8" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m3 16 4.5-4.5 3.5 3.5 2.5-2.5L21 20" /></svg>Gallery</a>
+        <a href="#venue-studio-section" class="nav-link inline-flex items-center gap-2 text-gold font-semibold hover:text-goldLight transition-colors py-2"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" stroke-width="1.8" d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path stroke-linejoin="round" stroke-width="1.8" d="m4 7.5 8 4.5 8-4.5M12 12v9" /></svg>3D Venue</a>
+        <a href="#packages-section" class="nav-link inline-flex items-center gap-2 hover:text-gold transition-colors py-2"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 8h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Zm3-3h8l1 3H7l1-3Zm4 7v3m-1.5-1.5h3" /></svg>Studio</a>
+        <a href="#enquiry-section" class="nav-link inline-flex items-center gap-2 hover:text-gold transition-colors py-2"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 3-7.5 18-3.5-7-7-3.5L21 3Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m10 14 4-4" /></svg>Enquire</a>
+      </nav>
+
+      <!-- Right Column: Saved Count + Consultation CTA + Mobile Drawer Toggle -->
+      <div class="flex items-center justify-end gap-2 sm:gap-3 shrink-0">
+        <button id="open-saved-drawer-btn" type="button" aria-label="Open Saved Designs" class="touch-target relative px-2.5 sm:px-3.5 py-2 rounded-xl border border-ivory/15 bg-surface/85 hover:border-gold/50 text-xs font-medium tracking-wider uppercase text-ivory/90 inline-flex items-center justify-center gap-1.5 sm:gap-2 transition-all">
+          <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+          </svg>
+          <span class="hidden sm:inline">Saved</span>
+          <span id="saved-count-badge" class="px-1.5 py-0.5 text-[10px] rounded-full bg-gold text-obsidian font-bold leading-none">0</span>
+        </button>
+
+        <a href="#enquiry-section" class="touch-target hidden sm:inline-flex items-center justify-center px-4 lg:px-5 py-2.5 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-semibold uppercase tracking-[0.12em] transition-all shadow-lg shadow-gold/10 whitespace-nowrap">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke-width="1.8" /><path stroke-linecap="round" stroke-width="1.8" d="M16 3v4M8 3v4M3 10h18m-9 4 1.5 1.5L18 13" /></svg>Book Consultation
+        </a>
+
+        <!-- Mobile Menu Toggle Button (Hamburger / Close Icon) -->
+        <button id="mobile-menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu-panel" aria-label="Toggle Navigation Menu" class="touch-target lg:hidden w-11 h-11 rounded-xl border border-ivory/20 bg-surface/85 text-ivory hover:border-gold inline-flex items-center justify-center transition-colors">
+          <svg id="menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Accessible Mobile Slide-Down Navigation Drawer -->
+    <div id="mobile-menu-panel" class="hidden lg:hidden border-t border-ivory/15 bg-obsidian/98 backdrop-blur-2xl px-4 sm:px-6 py-5 shadow-2xl">
+      <nav aria-label="Mobile Navigation" class="flex flex-col space-y-1.5 text-xs font-medium uppercase tracking-[0.16em]">
+        <a href="#categories-section" class="mobile-nav-link touch-target flex items-center justify-between px-3 py-3 rounded-xl text-ivory/90 hover:bg-surface hover:text-gold transition-colors">
+          <span class="inline-flex items-center gap-3"><svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" stroke-width="1.8" d="M12 3 3 7.5l9 4.5 9-4.5L12 3ZM3 12l9 4.5 9-4.5M3 16.5l9 4.5 9-4.5" /></svg>Event Categories (12)</span>
+          <svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m9 5 7 7-7 7" /></svg>
+        </a>
+        <a href="#gallery-section" class="mobile-nav-link touch-target flex items-center justify-between px-3 py-3 rounded-xl text-ivory/90 hover:bg-surface hover:text-gold transition-colors">
+          <span class="inline-flex items-center gap-3"><svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" stroke-width="1.8" /><circle cx="8.5" cy="9" r="1.25" stroke-width="1.8" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m3 16 4.5-4.5 3.5 3.5 2.5-2.5L21 20" /></svg>Photographic Gallery</span>
+          <svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m9 5 7 7-7 7" /></svg>
+        </a>
+        <a href="#venue-studio-section" class="mobile-nav-link touch-target flex items-center justify-between px-3 py-3 rounded-xl bg-gold/10 text-gold font-semibold">
+          <span class="inline-flex items-center gap-3"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linejoin="round" stroke-width="1.8" d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path stroke-linejoin="round" stroke-width="1.8" d="m4 7.5 8 4.5 8-4.5M12 12v9" /></svg>3D Venue &amp; Customisation Studio</span>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m9 5 7 7-7 7" /></svg>
+        </a>
+        <a href="#packages-section" class="mobile-nav-link touch-target flex items-center justify-between px-3 py-3 rounded-xl text-ivory/90 hover:bg-surface hover:text-gold transition-colors">
+          <span class="inline-flex items-center gap-3"><svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5 8h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Zm3-3h8l1 3H7l1-3Zm4 7v3m-1.5-1.5h3" /></svg>Production Packages</span>
+          <svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m9 5 7 7-7 7" /></svg>
+        </a>
+        <a href="#enquiry-section" class="mobile-nav-link touch-target flex items-center justify-between px-3 py-3 rounded-xl text-ivory/90 hover:bg-surface hover:text-gold transition-colors">
+          <span class="inline-flex items-center gap-3"><svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 3-7.5 18-3.5-7-7-3.5L21 3Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m10 14 4-4" /></svg>Enquire &amp; WhatsApp</span>
+          <svg class="w-4 h-4 shrink-0 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m9 5 7 7-7 7" /></svg>
+        </a>
+        <div class="pt-3">
+          <a href="#enquiry-section" class="mobile-nav-link touch-target w-full flex items-center justify-center py-3.5 px-5 rounded-xl bg-gold text-obsidian text-xs font-bold uppercase tracking-[0.14em]">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke-width="1.8" /><path stroke-linecap="round" stroke-width="1.8" d="M16 3v4M8 3v4M3 10h18m-9 4 1.5 1.5L18 13" /></svg>Book Consultation
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       MAIN CONTENT LAYER
+       ===================================================================== -->
+  <main class="relative z-10">
+
+    <!-- ===================================================================
+         SECTION 1: CINEMATIC HERO & SCROLL-CONTROLLED 3D GALLERY WORLD
+         =================================================================== -->
+    <section id="hero-section" class="min-h-screen flex flex-col justify-between pt-28 sm:pt-32 pb-10 sm:pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="my-auto max-w-3xl">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-gold/30 bg-surface/80 backdrop-blur-md mb-5 sm:mb-6 hero-animate">
+          <span class="w-2 h-2 rounded-full bg-gold animate-pulse shrink-0"></span>
+          <span class="text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em] text-goldLight">Architectural Event Scenography &amp; Virtual Production</span>
+        </div>
+
+        <h1 class="hero-display-title font-semibold text-ivory hero-animate">
+          Where Real Event Artistry Meets <span class="italic text-gold font-medium">Spatial 3D Precision.</span>
+        </h1>
+
+        <p class="mt-5 sm:mt-6 text-sm sm:text-base lg:text-lg text-ivory/80 font-light leading-relaxed max-w-2xl hero-animate">
+          Explore authentic event photography curated across twelve celebration disciplines, enter our interactive architectural 3D banquet hall, and tailor stage scenography, florals, lighting, and seating in real time.
+        </p>
+
+        <div class="mt-8 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 hero-animate">
+          <a href="#venue-studio-section" class="touch-target w-full sm:w-auto justify-center px-7 py-4 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-semibold uppercase tracking-[0.15em] transition-all shadow-xl shadow-gold/20 inline-flex items-center gap-3">
+            <span>Enter 3D Venue Hall</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+
+          <a href="#gallery-section" class="touch-target w-full sm:w-auto justify-center px-7 py-4 rounded-xl border border-ivory/25 bg-surface/75 hover:border-gold hover:text-gold text-ivory text-xs font-semibold uppercase tracking-[0.15em] backdrop-blur-md transition-all inline-flex items-center">
+            Explore Real Photography
+          </a>
+        </div>
+      </div>
+
+      <!-- Bottom Editorial Scroll Indicator & Studio Credentials -->
+      <div class="pt-10 sm:pt-12 mt-8 border-t border-ivory/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-stone hero-animate">
+        <div class="flex flex-wrap items-center gap-5 sm:gap-6">
+          <div>
+            <span class="text-ivory font-semibold block">12 Event Disciplines</span>
+            <span class="text-[11px]">Weddings, Galas, Launches &amp; Rituals</span>
+          </div>
+          <div class="h-7 w-px bg-ivory/15 hidden sm:block"></div>
+          <div>
+            <span class="text-ivory font-semibold block">3-Level Visual Verification</span>
+            <span class="text-[11px]">Real Photography + Live 3D Venue Geometry</span>
+          </div>
+        </div>
+
+        <a href="#philosophy-section" class="touch-target inline-flex items-center gap-2.5 text-gold font-medium uppercase tracking-[0.16em] text-[11px] py-1">
+          <span>Scroll to Traverse 3D Gallery</span>
+          <svg class="w-4 h-4 animate-bounce shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 1B: SCROLL-SCRUBBED STUDIO PHILOSOPHY BRIDGE
+         =================================================================== -->
+    <section id="philosophy-section" class="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+        <div class="lg:col-span-6 studio-panel p-6 sm:p-10 rounded-2xl">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-3">01 / Honest Spatial Pre-Visualisation</p>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory leading-tight tracking-tight">
+            No Cartoons. No Guesswork. Pure Architectural Clarity.
+          </h2>
+          <p class="mt-4 sm:mt-5 text-sm sm:text-base text-ivory/80 font-light leading-relaxed">
+            Traditional event planning relies on scattered moodboards, leaving clients uncertain about scale, sightlines, and lighting atmosphere. At <strong class="text-ivory font-semibold">Paris Event Organization</strong>, every decoration style is anchored in authentic event photography and mapped into a proportionate 3D architectural venue.
+          </p>
+          <div class="mt-6 sm:mt-7 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-ivory/10">
+            <div>
+              <span class="text-lg font-semibold text-gold block">Level 01</span>
+              <span class="text-xs text-ivory/80 mt-1 block">Authentic High-Res Event Photography</span>
+            </div>
+            <div>
+              <span class="text-lg font-semibold text-gold block">Level 02</span>
+              <span class="text-xs text-ivory/80 mt-1 block">Live 3D Stage, Floral &amp; Lighting Rig</span>
+            </div>
+            <div>
+              <span class="text-lg font-semibold text-gold block">Level 03</span>
+              <span class="text-xs text-ivory/80 mt-1 block">Side-by-Side Photo Reference Overlay</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <div class="studio-panel p-5 sm:p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400&q=80" alt="Luxury Floral Wedding Stage" class="w-full sm:w-28 h-40 sm:h-28 rounded-xl object-cover flex-shrink-0 border border-gold/30" />
+            <div>
+              <span class="text-[11px] font-medium uppercase tracking-[0.18em] text-gold">Curated Scenography</span>
+              <h3 class="text-lg sm:text-xl font-semibold text-ivory mt-1">Bespoke Floral &amp; Mandap Architecture</h3>
+              <p class="text-xs sm:text-sm text-stone mt-1.5 leading-relaxed">Inspect real installations in detail, then load their exact palette and stage geometry inside our 3D hall.</p>
+            </div>
+          </div>
+
+          <div class="studio-panel p-5 sm:p-6 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
+            <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=400&q=80" alt="Candlelit Reception Banquet" class="w-full sm:w-28 h-40 sm:h-28 rounded-xl object-cover flex-shrink-0 border border-gold/30" />
+            <div>
+              <span class="text-[11px] font-medium uppercase tracking-[0.18em] text-gold">7 Camera Sightlines</span>
+              <h3 class="text-lg sm:text-xl font-semibold text-ivory mt-1">Walkable Banquet &amp; Stage Inspection</h3>
+              <p class="text-xs sm:text-sm text-stone mt-1.5 leading-relaxed">Orbit freely or jump between Front Stage, Balcony, Entrance, and Table sightlines with boundary-safe controls.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 2: ALL 12 INTERACTIVE EVENT CATEGORIES
+         =================================================================== -->
+    <section id="categories-section" class="py-20 sm:py-28 bg-obsidian/95 border-t border-ivory/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-10 sm:mb-12">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-2">02 / Event Disciplines</p>
+            <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory tracking-tight">Twelve Curated Event Worlds</h2>
+          </div>
+          <p class="text-xs sm:text-sm text-stone max-w-md leading-relaxed">
+            Select any celebration category to inspect authentic photography, tailored decoration styles, spatial requirements, and launch it directly in the 3D Event Hall.
+          </p>
+        </div>
+
+        <!-- 12 Category Cards Responsive Auto Grid -->
+        <div id="categories-grid" class="responsive-auto-grid">
+          <!-- Populated dynamically via JS from EVENT_CATEGORIES data -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 3: PHOTOGRAPHIC EVENT DESIGN GALLERY
+         =================================================================== -->
+    <section id="gallery-section" class="py-20 sm:py-28 bg-surface/65 border-t border-ivory/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-5 mb-8 sm:mb-10">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-2">03 / Authentic Reference Archive</p>
+            <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory tracking-tight">Photographic Design Gallery</h2>
+          </div>
+          <!-- Touch-Scrollable Filter Tabs -->
+          <div class="flex items-center gap-2 w-full">
+            <button id="gallery-filter-prev-btn" type="button" aria-label="Scroll gallery filters left" class="lg:hidden touch-target w-10 h-10 shrink-0 rounded-full border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <div id="gallery-filter-bar" class="flex items-center gap-2 touch-scroll-strip pb-1 w-full min-w-0">
+            <button type="button" data-filter="all" class="gallery-filter-btn touch-target active px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold bg-gold text-obsidian transition-all whitespace-nowrap shrink-0">
+              All Arrangements
+            </button>
+            <button type="button" data-filter="wedding" class="gallery-filter-btn touch-target px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium bg-surface border border-ivory/15 text-ivory/80 hover:border-gold transition-all whitespace-nowrap shrink-0">
+              Wedding Stages
+            </button>
+            <button type="button" data-filter="birthday" class="gallery-filter-btn touch-target px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium bg-surface border border-ivory/15 text-ivory/80 hover:border-gold transition-all whitespace-nowrap shrink-0">
+              Birthday &amp; Milestones
+            </button>
+            <button type="button" data-filter="corporate" class="gallery-filter-btn touch-target px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium bg-surface border border-ivory/15 text-ivory/80 hover:border-gold transition-all whitespace-nowrap shrink-0">
+              Corporate &amp; Launches
+            </button>
+            <button type="button" data-filter="outdoor" class="gallery-filter-btn touch-target px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-medium bg-surface border border-ivory/15 text-ivory/80 hover:border-gold transition-all whitespace-nowrap shrink-0">
+              Outdoor &amp; Traditional
+            </button>
+            </div>
+            <button id="gallery-filter-next-btn" type="button" aria-label="Scroll gallery filters right" class="lg:hidden touch-target w-10 h-10 shrink-0 rounded-full border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="design-gallery-grid" class="responsive-auto-grid">
+          <!-- Populated dynamically via JS from DESIGN_GALLERY_ITEMS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 4: INTERACTIVE 3D EVENT HALL & CUSTOMISATION STUDIO
+         =================================================================== -->
+    <section id="venue-studio-section" class="py-20 sm:py-28 bg-obsidian border-t border-gold/25">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Studio Header -->
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-6 sm:mb-8">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/15 border border-gold/35 text-gold text-[11px] font-medium uppercase tracking-[0.18em] mb-3">
+              <span>Interactive Architectural WebGL Venue</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory tracking-tight">3D Event Hall &amp; Customisation Studio</h2>
+          </div>
+
+          <!-- Active Style Pill & Photo Reference Toggle -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div class="px-3.5 py-2.5 rounded-xl bg-surface border border-ivory/15 flex items-center gap-3">
+              <img id="studio-active-thumb" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=120&q=80" alt="Selected Style" class="w-10 h-10 rounded-lg object-cover border border-gold/40 shrink-0" />
+              <div class="min-w-0">
+                <span class="text-[10px] uppercase tracking-[0.16em] text-stone block">Active Reference Design</span>
+                <span id="studio-active-design-name" class="text-xs font-semibold text-ivory truncate block">Luxury Floral Royal Stage</span>
+              </div>
+            </div>
+
+            <button id="toggle-photo-reference-btn" type="button" class="touch-target px-4 py-3 rounded-xl border border-gold/45 bg-surface hover:bg-gold hover:text-obsidian text-gold text-xs font-semibold uppercase tracking-[0.12em] transition-all inline-flex items-center justify-center gap-2 shrink-0">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Level 3 Photo Overlay</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-Level Preview Transparency Bar -->
+        <div class="mb-6 p-3.5 sm:p-4 rounded-xl bg-surface/90 border border-ivory/10 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div class="flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-gold/20 text-gold font-bold text-[10px] uppercase tracking-wider mt-0.5 shrink-0">Level 1</span>
+            <p class="text-ivory/80 leading-relaxed"><strong class="text-ivory font-semibold">Photographic Preview:</strong> Authentic event photograph mapped to the stage backdrop &amp; studio board.</p>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-gold/20 text-gold font-bold text-[10px] uppercase tracking-wider mt-0.5 shrink-0">Level 2</span>
+            <p class="text-ivory/80 leading-relaxed"><strong class="text-ivory font-semibold">3D Geometry &amp; Lighting:</strong> Live 3D stage architecture, floral clusters, seating layout, entrance &amp; spotlights.</p>
+          </div>
+          <div class="flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-gold/20 text-gold font-bold text-[10px] uppercase tracking-wider mt-0.5 shrink-0">Level 3</span>
+            <p class="text-ivory/80 leading-relaxed"><strong class="text-ivory font-semibold">Reference Board Mode:</strong> Inspect the uncropped real photograph side-by-side without 2D-to-3D distortion.</p>
+          </div>
+        </div>
+
+        <!-- MAIN STUDIO WORKSPACE: Stacked on Mobile/Tablet, Split on Desktop -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
+
+          <!-- 3D EVENT HALL VIEWPORT (8 Columns on XL) -->
+          <div class="xl:col-span-8 flex flex-col rounded-2xl overflow-hidden border border-gold/25 bg-surface shadow-2xl">
+            <!-- Top Camera Presets Strip (Touch-scrollable bar outside canvas) -->
+            <div class="p-2.5 sm:p-3 bg-obsidian/95 border-b border-ivory/10 flex items-center gap-1.5">
+              <button id="camera-presets-prev-btn" type="button" aria-label="Scroll camera presets left" class="lg:hidden touch-target w-9 h-9 shrink-0 rounded-lg border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div id="camera-presets-bar" class="flex items-center gap-1.5 min-w-0 flex-1 touch-scroll-strip">
+                <span class="text-[10px] uppercase tracking-[0.16em] text-gold font-semibold px-2 whitespace-nowrap shrink-0">Views:</span>
+                <button type="button" data-cam="overview" class="cam-preset-btn touch-target active px-3.5 py-2 rounded-lg text-[11px] font-semibold bg-gold text-obsidian whitespace-nowrap shrink-0 transition-all">1. Full Overview</button>
+              <button type="button" data-cam="frontStage" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">2. Front Stage</button>
+              <button type="button" data-cam="leftWing" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">3. Left Wing</button>
+              <button type="button" data-cam="rightWing" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">4. Right Wing</button>
+              <button type="button" data-cam="backEntrance" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">5. Back &amp; Entrance</button>
+              <button type="button" data-cam="balcony" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">6. Elevated View</button>
+              <button type="button" data-cam="stageCloseup" class="cam-preset-btn touch-target px-3.5 py-2 rounded-lg text-[11px] font-medium bg-surface text-ivory/80 hover:text-gold whitespace-nowrap shrink-0 transition-all">7. Stage Close-Up</button>
+              </div>
+              <button id="camera-presets-next-btn" type="button" aria-label="Scroll camera presets right" class="lg:hidden touch-target w-9 h-9 shrink-0 rounded-lg border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- 3D WebGL Canvas Container -->
+            <div id="venue-canvas-wrapper" class="flex-1 relative">
+              <!-- WebGL Fallback Notice -->
+              <div id="webgl-fallback" class="hidden absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-surface">
+                <p class="text-xl font-semibold text-gold mb-2">3D Viewport Unavailable on This Browser</p>
+                <p class="text-xs sm:text-sm text-ivory/80 max-w-md">Your device does not currently support WebGL rendering. You can still explore all authentic photographic references, customise packages, and generate an instant estimate.</p>
+              </div>
+
+              <!-- Level 3 Photographic Reference Board Overlay (Compact & Toggleable on Small Screens) -->
+              <div id="level3-photo-overlay" class="hidden absolute inset-2.5 sm:inset-6 z-20 rounded-2xl bg-obsidian/96 backdrop-blur-xl border border-gold/45 p-3.5 sm:p-6 flex flex-col justify-between shadow-2xl overflow-y-auto">
+                <div class="flex items-center justify-between gap-3 border-b border-ivory/10 pb-2.5">
+                  <div class="min-w-0">
+                    <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-gold block">Level 3 Photographic Reference</span>
+                    <h4 id="overlay-photo-title" class="text-sm sm:text-xl font-semibold text-ivory truncate">Luxury Floral Royal Stage</h4>
+                  </div>
+                  <button id="close-photo-overlay-btn" type="button" class="touch-target px-3 py-2 rounded-lg bg-surface border border-ivory/25 hover:border-gold text-xs font-medium text-ivory shrink-0">
+                    Return to 3D
+                  </button>
+                </div>
+                <div class="my-2.5 flex-1 overflow-hidden rounded-xl bg-black/65 flex items-center justify-center min-h-[160px]">
+                  <img id="overlay-photo-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85" alt="Full Event Reference Photograph" class="max-h-full max-w-full object-contain rounded-lg" />
+                </div>
+                <p id="overlay-photo-caption" class="text-[11px] sm:text-xs text-stone leading-relaxed">
+                  Authentic photographic documentation of the selected arrangement. Return to the 3D Venue Hall to inspect spatial proportions and lighting gels.
+                </p>
+              </div>
+
+              <!-- Bottom Viewport Navigation Hint -->
+              <div class="absolute bottom-2.5 left-2.5 right-2.5 z-10 pointer-events-none flex flex-wrap items-center justify-between gap-2">
+                <div class="px-2.5 py-1 rounded-lg bg-obsidian/85 backdrop-blur-md border border-ivory/10 text-[10px] sm:text-[11px] text-ivory/85">
+                  Drag / Touch to Orbit • Pinch / Scroll to Zoom
+                </div>
+                <div id="venue-hud-status" class="px-2.5 py-1 rounded-lg bg-obsidian/85 backdrop-blur-md border border-gold/30 text-[10px] sm:text-[11px] font-medium text-gold">
+                  View: Full Venue Overview
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CUSTOMISATION STUDIO PANEL (4 Columns on XL) -->
+          <div class="xl:col-span-4 rounded-2xl border border-ivory/15 bg-surface flex flex-col overflow-hidden">
+            <!-- Customizer Category Tabs -->
+            <div class="p-2.5 sm:p-3 bg-obsidian/95 border-b border-ivory/10 flex items-center gap-1.5">
+              <button id="customizer-tabs-prev-btn" type="button" aria-label="Scroll customizer tabs left" class="lg:hidden touch-target w-9 h-9 shrink-0 rounded-lg border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <div id="customizer-tabs-bar" class="flex items-center gap-1.5 min-w-0 flex-1 touch-scroll-strip">
+                <button type="button" data-cust-tab="stage" class="cust-tab-btn touch-target active px-3.5 py-2 rounded-lg text-xs font-semibold bg-gold text-obsidian whitespace-nowrap shrink-0">Stage</button>
+              <button type="button" data-cust-tab="decor" class="cust-tab-btn touch-target px-3.5 py-2 rounded-lg text-xs font-medium bg-surface text-ivory/75 hover:text-gold whitespace-nowrap shrink-0">Florals &amp; Decor</button>
+              <button type="button" data-cust-tab="lighting" class="cust-tab-btn touch-target px-3.5 py-2 rounded-lg text-xs font-medium bg-surface text-ivory/75 hover:text-gold whitespace-nowrap shrink-0">Lighting</button>
+              <button type="button" data-cust-tab="seating" class="cust-tab-btn touch-target px-3.5 py-2 rounded-lg text-xs font-medium bg-surface text-ivory/75 hover:text-gold whitespace-nowrap shrink-0">Seating &amp; Tables</button>
+              <button type="button" data-cust-tab="entrance" class="cust-tab-btn touch-target px-3.5 py-2 rounded-lg text-xs font-medium bg-surface text-ivory/75 hover:text-gold whitespace-nowrap shrink-0">Entrance</button>
+              <button type="button" data-cust-tab="theme" class="cust-tab-btn touch-target px-3.5 py-2 rounded-lg text-xs font-medium bg-surface text-ivory/75 hover:text-gold whitespace-nowrap shrink-0">Palette</button>
+              </div>
+              <button id="customizer-tabs-next-btn" type="button" aria-label="Scroll customizer tabs right" class="lg:hidden touch-target w-9 h-9 shrink-0 rounded-lg border border-ivory/20 bg-surface text-ivory hover:border-gold hover:text-gold inline-flex items-center justify-center transition-colors disabled:opacity-40 disabled:pointer-events-none">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Customizer Options Scroll Area -->
+            <div class="p-4 sm:p-5 flex-1 overflow-y-auto max-h-[430px] space-y-5" id="customizer-controls-body">
+              <!-- TAB 1: STAGE -->
+              <div data-cust-panel="stage" class="cust-panel space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Stage Architecture</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="stageType" data-state-val="Classic Proscenium" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Classic Proscenium</button>
+                    <button type="button" data-state-key="stageType" data-state-val="Royal Mandap Pavilion" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80 hover:border-gold/50">Royal Mandap Pavilion</button>
+                    <button type="button" data-state-key="stageType" data-state-val="Modern Fashion Runway" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80 hover:border-gold/50">Modern Runway</button>
+                    <button type="button" data-state-key="stageType" data-state-val="Curved LED Panorama" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80 hover:border-gold/50">Curved LED Stage</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Stage Footprint &amp; Elevation</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-state-key="stageSize" data-state-val="Compact" class="opt-btn touch-target p-2.5 rounded-xl border border-ivory/15 bg-obsidian/60 text-center text-xs text-ivory/80">Compact</button>
+                    <button type="button" data-state-key="stageSize" data-state-val="Grand" class="opt-btn touch-target active p-2.5 rounded-xl border border-gold bg-gold/15 text-center text-xs text-ivory font-medium">Grand</button>
+                    <button type="button" data-state-key="stageSize" data-state-val="Monumental" class="opt-btn touch-target p-2.5 rounded-xl border border-ivory/15 bg-obsidian/60 text-center text-xs text-ivory/80">Monumental</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Backdrop Framing</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="backdropStyle" data-state-val="Photographic Scenic Wall" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Photo Scenic Wall</button>
+                    <button type="button" data-state-key="backdropStyle" data-state-val="Architectural Arches" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Architectural Arches</button>
+                    <button type="button" data-state-key="backdropStyle" data-state-val="Silk Drapery &amp; Columns" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Silk Drapery</button>
+                    <button type="button" data-state-key="backdropStyle" data-state-val="Botanical Living Wall" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Botanical Wall</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 2: FLORALS & DECOR -->
+              <div data-cust-panel="decor" class="cust-panel hidden space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Floral Arrangement Density</label>
+                  <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-state-key="floralDensity" data-state-val="Minimal" class="opt-btn touch-target p-2.5 rounded-xl border border-ivory/15 bg-obsidian/60 text-center text-xs text-ivory/80">Minimal</button>
+                    <button type="button" data-state-key="floralDensity" data-state-val="Lush" class="opt-btn touch-target active p-2.5 rounded-xl border border-gold bg-gold/15 text-center text-xs text-ivory font-medium">Lush</button>
+                    <button type="button" data-state-key="floralDensity" data-state-val="Opulent" class="opt-btn touch-target p-2.5 rounded-xl border border-ivory/15 bg-obsidian/60 text-center text-xs text-ivory/80">Opulent</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Botanical &amp; Craft Style</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="decorStyle" data-state-val="Fresh Roses &amp; Hydrangeas" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Fresh Roses &amp; Hydrangeas</button>
+                    <button type="button" data-state-key="decorStyle" data-state-val="Silk Orchids &amp; Wisteria" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Silk Orchids &amp; Wisteria</button>
+                    <button type="button" data-state-key="decorStyle" data-state-val="Traditional Marigold &amp; Brass" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Marigold &amp; Temple Brass</button>
+                    <button type="button" data-state-key="decorStyle" data-state-val="Modern Sculptural Greenery" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Sculptural Greenery</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Ceiling &amp; Hanging Installations</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="hangingDecor" data-state-val="Crystal Chandeliers" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Crystal Chandeliers</button>
+                    <button type="button" data-state-key="hangingDecor" data-state-val="Suspended Floral Clouds" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Floral Clouds</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 3: LIGHTING -->
+              <div data-cust-panel="lighting" class="cust-panel hidden space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Atmospheric Lighting Gel</label>
+                  <div class="grid grid-cols-1 gap-2">
+                    <button type="button" data-state-key="lightingMood" data-state-val="Warm Candlelight" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 flex items-center justify-between text-xs text-ivory font-medium">
+                      <span>Warm Candlelight &amp; Amber (2700K)</span>
+                      <span class="w-4 h-4 rounded-full bg-amber-300 border border-white/30 shrink-0"></span>
+                    </button>
+                    <button type="button" data-state-key="lightingMood" data-state-val="Crisp Architectural White" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center justify-between text-xs text-ivory/80">
+                      <span>Crisp Architectural White (4500K)</span>
+                      <span class="w-4 h-4 rounded-full bg-slate-100 border border-white/30 shrink-0"></span>
+                    </button>
+                    <button type="button" data-state-key="lightingMood" data-state-val="Rose &amp; Champagne Wash" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center justify-between text-xs text-ivory/80">
+                      <span>Romantic Rose &amp; Champagne Wash</span>
+                      <span class="w-4 h-4 rounded-full bg-rose-400 border border-white/30 shrink-0"></span>
+                    </button>
+                    <button type="button" data-state-key="lightingMood" data-state-val="Twilight Sapphire &amp; Gold" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center justify-between text-xs text-ivory/80">
+                      <span>Twilight Sapphire &amp; Gold Spotlights</span>
+                      <span class="w-4 h-4 rounded-full bg-indigo-400 border border-white/30 shrink-0"></span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Stage Spotlights &amp; Beams</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="spotlights" data-state-val="Theatrical Beams On" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-center text-xs text-ivory font-medium">Theatrical Beams On</button>
+                    <button type="button" data-state-key="spotlights" data-state-val="Soft Ambient Only" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-center text-xs text-ivory/80">Soft Ambient Only</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 4: SEATING & TABLES -->
+              <div data-cust-panel="seating" class="cust-panel hidden space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">3D Floor Seating Configuration</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="seatingLayout" data-state-val="Round Banquet Tables" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Round Banquet Tables</button>
+                    <button type="button" data-state-key="seatingLayout" data-state-val="VIP Sofa &amp; Lounge Pods" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">VIP Sofa &amp; Lounge Pods</button>
+                    <button type="button" data-state-key="seatingLayout" data-state-val="Ceremony Theatre Rows" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Ceremony Theatre Rows</button>
+                    <button type="button" data-state-key="seatingLayout" data-state-val="Royal Banquet + VIP Front" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Mixed Gala + VIP Front</button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Table Linens &amp; Centerpieces</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button type="button" data-state-key="tableDecor" data-state-val="Ivory Silk &amp; Gold Candelabra" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Ivory Silk &amp; Candelabra</button>
+                    <button type="button" data-state-key="tableDecor" data-state-val="Velvet Drape &amp; Low Florals" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Velvet &amp; Low Florals</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 5: ENTRANCE -->
+              <div data-cust-panel="entrance" class="cust-panel hidden space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Grand Hall Entrance Architecture</label>
+                  <div class="grid grid-cols-1 gap-2">
+                    <button type="button" data-state-key="entranceStyle" data-state-val="Lush Floral Tunnel Arch" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 text-left text-xs text-ivory font-medium">Lush Floral Tunnel Arch</button>
+                    <button type="button" data-state-key="entranceStyle" data-state-val="Royal Classical Columns &amp; Urns" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Royal Classical Columns &amp; Urns</button>
+                    <button type="button" data-state-key="entranceStyle" data-state-val="Minimalist Illuminated Frame" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Minimalist Illuminated Portal</button>
+                    <button type="button" data-state-key="entranceStyle" data-state-val="Traditional Lantern &amp; Marigold Gate" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 text-left text-xs text-ivory/80">Traditional Lantern &amp; Marigold Gate</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TAB 6: COLOUR PALETTE -->
+              <div data-cust-panel="theme" class="cust-panel hidden space-y-4">
+                <div>
+                  <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold block mb-2">Signature Scenography Colour Palette</label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button type="button" data-state-key="colorTheme" data-state-val="Royal Gold" class="opt-btn touch-target active p-3 rounded-xl border border-gold bg-gold/15 flex items-center gap-2.5 text-xs text-ivory font-medium">
+                      <span class="w-4 h-4 rounded-full bg-[#d4af37] shrink-0"></span>
+                      <span>Royal Gold</span>
+                    </button>
+                    <button type="button" data-state-key="colorTheme" data-state-val="White &amp; Ivory" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center gap-2.5 text-xs text-ivory/80">
+                      <span class="w-4 h-4 rounded-full bg-[#f5f2eb] shrink-0"></span>
+                      <span>White &amp; Ivory</span>
+                    </button>
+                    <button type="button" data-state-key="colorTheme" data-state-val="Pink &amp; Pastel" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center gap-2.5 text-xs text-ivory/80">
+                      <span class="w-4 h-4 rounded-full bg-[#e89eb8] shrink-0"></span>
+                      <span>Pink &amp; Pastel</span>
+                    </button>
+                    <button type="button" data-state-key="colorTheme" data-state-val="Red &amp; Gold" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center gap-2.5 text-xs text-ivory/80">
+                      <span class="w-4 h-4 rounded-full bg-[#9e1b24] shrink-0"></span>
+                      <span>Red &amp; Gold</span>
+                    </button>
+                    <button type="button" data-state-key="colorTheme" data-state-val="Green &amp; Botanical" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center gap-2.5 text-xs text-ivory/80">
+                      <span class="w-4 h-4 rounded-full bg-[#2e6f40] shrink-0"></span>
+                      <span>Green &amp; Botanical</span>
+                    </button>
+                    <button type="button" data-state-key="colorTheme" data-state-val="Blue &amp; Silver" class="opt-btn touch-target p-3 rounded-xl border border-ivory/15 bg-obsidian/60 flex items-center gap-2.5 text-xs text-ivory/80">
+                      <span class="w-4 h-4 rounded-full bg-[#3b6998] shrink-0"></span>
+                      <span>Blue &amp; Silver</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LIVE CUSTOMISATION SUMMARY & ESTIMATE FOOTER -->
+            <div class="p-4 sm:p-5 bg-obsidian/95 border-t border-gold/25 space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] uppercase tracking-[0.18em] text-gold font-semibold">Live Specification Summary</span>
+                <button id="reset-design-btn" type="button" class="touch-target px-2 text-xs text-stone hover:text-ivory underline">Reset Default</button>
+              </div>
+
+              <!-- Guest Count & Package Quick Controls (Single Column on Mobile, 2 Columns on SM+) -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3 rounded-xl bg-surface border border-ivory/10">
+                  <div class="flex justify-between text-xs mb-2">
+                    <span class="text-stone">Guests</span>
+                    <span id="summary-guest-count-label" class="text-ivory font-semibold">250</span>
+                  </div>
+                  <input id="guest-count-slider" type="range" min="50" max="1000" step="25" value="250" aria-label="Guest Count" />
+                </div>
+
+                <div class="p-3 rounded-xl bg-surface border border-ivory/10">
+                  <label for="package-tier-select" class="text-[11px] text-stone block mb-1">Production Tier</label>
+                  <select id="package-tier-select" class="touch-target w-full bg-obsidian text-ivory text-xs rounded-lg px-2.5 py-2 border border-ivory/15 focus:outline-none focus:border-gold">
+                    <option value="essential">Essential Scenography</option>
+                    <option value="signature" selected>Signature Atelier</option>
+                    <option value="imperial">Imperial Couture</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Compact Summary Readout -->
+              <div id="live-summary-pills" class="flex flex-wrap gap-1.5 text-[11px]">
+                <!-- Populated dynamically -->
+              </div>
+
+              <!-- Indicative Estimate Box -->
+              <div class="p-3.5 rounded-xl bg-surface border border-gold/30 flex items-center justify-between gap-3">
+                <div>
+                  <span class="text-[10px] uppercase tracking-[0.16em] text-stone block">Indicative Studio Estimate</span>
+                  <span id="live-budget-display" class="text-2xl sm:text-3xl text-gold font-semibold">$18,500</span>
+                </div>
+                <span class="text-[10px] text-stone max-w-[140px] text-right leading-tight">
+                  Indicative only. Final quote after venue survey.
+                </span>
+              </div>
+
+              <!-- Save & Enquiry CTA Buttons -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button id="save-design-btn" type="button" class="touch-target py-3.5 px-4 rounded-xl border border-gold/50 hover:bg-gold/15 text-gold text-xs font-semibold uppercase tracking-wider transition-all">
+                  Save Design
+                </button>
+                <a href="#enquiry-section" class="touch-target py-3.5 px-4 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-bold uppercase tracking-wider inline-flex items-center justify-center transition-all">
+                  Request Quote
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 5: TRANSPARENT PRODUCTION PACKAGES
+         =================================================================== -->
+    <section id="packages-section" class="py-20 sm:py-28 bg-surface/60 border-t border-ivory/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10 sm:mb-12">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-2">04 / Transparent Production Tiers</p>
+          <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory tracking-tight">Indicative Event Scenography Packages</h2>
+          <p class="mt-3 text-xs sm:text-sm text-stone leading-relaxed">
+            All figures shown below are indicative planning baselines calculated for your current guest count (<span id="pkg-guest-echo" class="text-ivory font-semibold">250 guests</span>). Selecting a tier updates your live studio configuration immediately.
+          </p>
+        </div>
+
+        <div id="packages-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Populated dynamically from STUDIO_CONFIG.packages -->
+        </div>
+
+        <p class="mt-6 text-xs text-stone italic">
+          * Disclaimer: Indicative Studio Estimate — Final quotation tailored after venue technical survey, seasonal floral availability, and logistics schedule.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SECTION 6: COMPLETE BOOKING, CONSULTATION & WHATSAPP ENQUIRY
+         =================================================================== -->
+    <section id="enquiry-section" class="py-20 sm:py-28 bg-obsidian border-t border-ivory/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+
+          <!-- Left Column: Studio Consultation Info & Live Brief -->
+          <div class="lg:col-span-5 space-y-6">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-2">05 / Commission &amp; Consultation</p>
+              <h2 class="text-2xl sm:text-4xl lg:text-5xl font-semibold text-ivory leading-tight tracking-tight">
+                Reserve Your Architectural Design Consultation
+              </h2>
+              <p class="mt-4 text-xs sm:text-sm text-ivory/80 leading-relaxed">
+                Submit your customised 3D venue brief to receive a formal line-item quotation, CAD floorplan review, and floral sample consultation from our senior scenographers.
+              </p>
+            </div>
+
+            <!-- Auto-synced Design Brief Card -->
+            <div class="p-5 sm:p-6 rounded-2xl bg-surface border border-gold/25 space-y-3">
+              <div class="flex items-center justify-between border-b border-ivory/10 pb-3">
+                <span class="text-xs uppercase tracking-[0.16em] text-gold font-semibold">Attached 3D Studio Brief</span>
+                <a href="#venue-studio-section" class="text-xs text-ivory/75 hover:text-gold underline">Edit in 3D Hall</a>
+              </div>
+              <dl id="enquiry-brief-list" class="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-4 text-xs">
+                <!-- Populated dynamically -->
+              </dl>
+            </div>
+
+            <!-- Editable Studio Contact Config Notice -->
+            <div class="p-5 rounded-2xl bg-surface/60 border border-ivory/10 text-xs text-stone space-y-1.5">
+              <p class="text-ivory font-semibold">Paris Event Organization Production Desk</p>
+              <p>Studio Line (Configurable): <span id="display-studio-phone" class="text-ivory">+00 00000 00000</span></p>
+              <p>Directures &amp; Private Showings by Appointment</p>
+            </div>
+          </div>
+
+          <!-- Right Column: Complete Booking & Quotation Form -->
+          <div class="lg:col-span-7">
+            <form id="booking-enquiry-form" class="p-5 sm:p-9 rounded-2xl bg-surface border border-ivory/15 space-y-5" novalidate>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="cust-name" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Full Name *</label>
+                  <input id="cust-name" name="name" type="text" required placeholder="e.g. Aarav &amp; Meera Kapoor" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory placeholder-stone/60 focus:outline-none focus:border-gold" />
+                </div>
+                <div>
+                  <label for="cust-phone" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Phone / WhatsApp Number *</label>
+                  <input id="cust-phone" name="phone" type="tel" required placeholder="e.g. +91 98000 00000" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory placeholder-stone/60 focus:outline-none focus:border-gold" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="cust-email" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Email Address *</label>
+                  <input id="cust-email" name="email" type="email" required placeholder="client@domain.com" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory placeholder-stone/60 focus:outline-none focus:border-gold" />
+                </div>
+                <div>
+                  <label for="cust-category" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Event Category *</label>
+                  <select id="cust-category" name="category" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory focus:outline-none focus:border-gold">
+                    <!-- Populated with all 12 categories -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label for="cust-date" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Event Date *</label>
+                  <input id="cust-date" name="date" type="date" required class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory focus:outline-none focus:border-gold" />
+                </div>
+                <div>
+                  <label for="cust-location" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">City / Destination *</label>
+                  <input id="cust-location" name="location" type="text" required placeholder="e.g. Chennai / Udaipur / Dubai" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory placeholder-stone/60 focus:outline-none focus:border-gold" />
+                </div>
+                <div>
+                  <label for="cust-venue-pref" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Venue Preference</label>
+                  <select id="cust-venue-pref" name="venuePref" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory focus:outline-none focus:border-gold">
+                    <option value="Grand Indoor Banquet Hall">Grand Indoor Banquet Hall</option>
+                    <option value="Luxury Heritage Palace / Resort">Heritage Palace / Resort</option>
+                    <option value="Outdoor Garden / Lawn Pavilion">Outdoor Garden / Lawn</option>
+                    <option value="Convention / Exhibition Arena">Convention / Arena</option>
+                    <option value="Private Estate / Rooftop">Private Estate / Rooftop</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="cust-guests" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Expected Guest Count</label>
+                  <input id="cust-guests" name="guests" type="number" min="20" max="5000" value="250" class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-sm text-ivory focus:outline-none focus:border-gold" />
+                </div>
+                <div>
+                  <label for="cust-budget" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Indicative Budget Range</label>
+                  <input id="cust-budget" name="budget" type="text" readonly class="touch-target w-full px-4 py-3 rounded-xl bg-obsidian/70 border border-gold/30 text-sm text-gold font-semibold" />
+                </div>
+              </div>
+
+              <div>
+                <label for="cust-notes" class="block text-xs font-medium uppercase tracking-wider text-ivory/85 mb-1.5">Bespoke Scenography Notes &amp; Customisation Summary</label>
+                <textarea id="cust-notes" name="notes" rows="4" class="w-full px-4 py-3 rounded-xl bg-obsidian border border-ivory/15 text-xs sm:text-sm text-ivory/90 leading-relaxed focus:outline-none focus:border-gold"></textarea>
+              </div>
+
+              <!-- Validation Error Banner -->
+              <div id="form-error-banner" class="hidden p-3.5 rounded-xl bg-red-950/70 border border-red-500/40 text-xs text-red-200"></div>
+
+              <!-- Action Buttons (Single Column on Mobile, 3 Columns on SM+) -->
+              <div class="pt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button type="submit" data-action-type="Formal Quotation Request" class="submit-enquiry-btn touch-target py-3.5 px-5 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-bold uppercase tracking-[0.12em] transition-all">
+                  Request Formal Quote
+                </button>
+
+                <button type="button" id="book-consultation-btn" class="touch-target py-3.5 px-5 rounded-xl border border-gold/60 hover:bg-gold/15 text-gold text-xs font-semibold uppercase tracking-[0.12em] transition-all">
+                  Book Consultation
+                </button>
+
+                <button type="button" id="whatsapp-enquiry-btn" class="touch-target py-3.5 px-5 rounded-xl bg-[#1f3a2c] hover:bg-[#274b38] border border-emerald-500/40 text-emerald-200 text-xs font-semibold uppercase tracking-[0.12em] transition-all flex items-center justify-center gap-2">
+                  <span>WhatsApp Enquiry</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- Honest Enquiry Submission Confirmation Card -->
+            <div id="enquiry-confirmation-card" class="hidden mt-6 p-6 sm:p-7 rounded-2xl bg-surface border border-gold/50 space-y-4">
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <span class="px-2.5 py-1 rounded bg-gold/20 text-gold text-[10px] font-bold uppercase tracking-widest">Enquiry Logged Locally</span>
+                  <h3 class="text-xl sm:text-2xl font-semibold text-ivory mt-2">Design Dossier Prepared for Studio Review</h3>
+                </div>
+                <span id="confirm-ref-id" class="text-xs font-mono text-gold bg-obsidian px-3 py-1.5 rounded-lg border border-gold/30">REF-0000</span>
+              </div>
+              <p id="confirm-message-body" class="text-xs sm:text-sm text-ivory/80 leading-relaxed"></p>
+              <div class="pt-3 border-t border-ivory/10 flex flex-wrap items-center justify-between gap-3 text-xs text-stone">
+                <span>Saved in your browser enquiry log. Use WhatsApp Enquiry for immediate mobile dispatch.</span>
+                <button type="button" id="new-enquiry-btn" class="touch-target text-gold hover:underline font-medium">Edit / Submit Another Brief</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       FOOTER
+       ===================================================================== -->
+  <footer class="relative z-10 bg-obsidian border-t border-ivory/10 py-10 sm:py-12 px-4 sm:px-6 lg:px-8 text-xs text-stone">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div>
+        <span class="text-sm font-semibold tracking-[0.16em] text-ivory">PARIS EVENT ORGANIZATION</span>
+        <span class="block sm:inline sm:ml-3 text-stone">Architectural Event Scenography &amp; Interactive 3D Production Studio</span>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-5 sm:gap-6">
+        <a href="#categories-section" class="hover:text-gold transition-colors">12 Event Disciplines</a>
+        <a href="#venue-studio-section" class="hover:text-gold transition-colors">3D Venue Hall</a>
+        <a href="#enquiry-section" class="hover:text-gold transition-colors">Consultation</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       MODAL 1: EVENT CATEGORY EXPERIENCE DRAWER / MODAL (Mobile-Safe 90dvh)
+       ===================================================================== -->
+  <div id="category-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div class="w-full max-w-4xl max-h-[90dvh] overflow-y-auto rounded-2xl bg-surface border border-gold/35 shadow-2xl">
+      <div class="relative h-52 sm:h-72 bg-obsidian shrink-0">
+        <img id="cat-modal-hero-img" src="" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/35 to-transparent"></div>
+        <button id="close-cat-modal-btn" type="button" aria-label="Close Modal" class="touch-target absolute top-3 right-3 w-11 h-11 rounded-full bg-obsidian/85 border border-ivory/25 text-ivory hover:border-gold flex items-center justify-center">
+          ✕
+        </button>
+        <div class="absolute bottom-4 left-5 right-5 sm:bottom-5 sm:left-6 sm:right-6">
+          <span id="cat-modal-tag" class="text-[11px] font-medium uppercase tracking-[0.18em] text-gold block mb-1">Event Discipline</span>
+          <h3 id="cat-modal-title" class="text-2xl sm:text-3xl font-semibold text-ivory"></h3>
+        </div>
+      </div>
+
+      <div class="p-5 sm:p-8 space-y-5 sm:space-y-6">
+        <p id="cat-modal-desc" class="text-xs sm:text-base text-ivory/85 leading-relaxed"></p>
+
+        <!-- Spatial Specs -->
+        <div id="cat-modal-specs" class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-obsidian/80 border border-ivory/10 text-xs"></div>
+
+        <!-- Curated Styles for This Category -->
+        <div>
+          <h4 class="text-xs uppercase tracking-[0.18em] text-gold font-semibold mb-3">Signature Decoration Styles for This Event</h4>
+          <div id="cat-modal-styles" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+        </div>
+
+        <div class="pt-4 border-t border-ivory/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+          <button id="cat-modal-launch-3d-btn" type="button" class="touch-target px-6 py-3.5 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-bold uppercase tracking-[0.14em] transition-all">
+            Customise in 3D Event Hall
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODAL 2: PHOTOGRAPHIC DESIGN LIGHTBOX & DETAIL PREVIEW (Mobile-Safe)
+       ===================================================================== -->
+  <div id="gallery-lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6">
+    <div class="w-full max-w-5xl max-h-[90dvh] overflow-y-auto rounded-2xl bg-surface border border-gold/35 shadow-2xl grid grid-cols-1 lg:grid-cols-12">
+      <div class="lg:col-span-7 bg-black flex items-center justify-center min-h-[220px] sm:min-h-[380px]">
+        <img id="lightbox-img" src="" alt="" class="w-full h-full max-h-[45vh] lg:max-h-[540px] object-cover" />
+      </div>
+      <div class="lg:col-span-5 p-5 sm:p-8 flex flex-col justify-between space-y-5">
+        <div class="space-y-4">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span id="lightbox-category" class="text-[11px] font-medium uppercase tracking-[0.18em] text-gold block">Wedding Stage</span>
+              <h3 id="lightbox-title" class="text-xl sm:text-2xl font-semibold text-ivory mt-1"></h3>
+            </div>
+            <button id="close-lightbox-btn" type="button" aria-label="Close Lightbox" class="touch-target w-11 h-11 rounded-full bg-obsidian border border-ivory/25 text-ivory hover:border-gold flex items-center justify-center shrink-0">✕</button>
+          </div>
+
+          <p id="lightbox-desc" class="text-xs sm:text-sm text-ivory/80 leading-relaxed"></p>
+
+          <div id="lightbox-meta" class="p-4 rounded-xl bg-obsidian/80 border border-ivory/10 space-y-2 text-xs"></div>
+        </div>
+
+        <div class="space-y-2.5 pt-4 border-t border-ivory/10">
+          <button id="lightbox-apply-3d-btn" type="button" class="touch-target w-full py-3.5 px-5 rounded-xl bg-gold hover:bg-goldLight text-obsidian text-xs font-bold uppercase tracking-[0.14em] transition-all">
+            Apply Design to 3D Venue Hall
+          </button>
+          <p class="text-[11px] text-stone text-center">
+            Loads real photographic backdrop &amp; matching 3D stage/floral/lighting rig.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       DRAWER: SAVED DESIGNS (LocalStorage)
+       ===================================================================== -->
+  <div id="saved-designs-drawer" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex justify-end">
+    <div class="w-full max-w-md bg-surface border-l border-gold/30 h-full flex flex-col justify-between p-5 sm:p-6 overflow-y-auto">
+      <div>
+        <div class="flex items-center justify-between border-b border-ivory/10 pb-4 mb-5">
+          <div>
+            <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-gold block">LocalStorage Studio Archive</span>
+            <h3 class="text-xl font-semibold text-ivory">Saved Event Configurations</h3>
+          </div>
+          <button id="close-saved-drawer-btn" type="button" aria-label="Close Saved Drawer" class="touch-target w-11 h-11 rounded-full bg-obsidian border border-ivory/25 text-ivory hover:border-gold flex items-center justify-center">✕</button>
+        </div>
+        <div id="saved-designs-list" class="space-y-3">
+          <!-- Populated from LocalStorage -->
+        </div>
+      </div>
+      <div class="pt-4 border-t border-ivory/10 text-xs text-stone">
+        Configurations are stored locally on your device so you can compare arrangements or attach them to a consultation request.
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       TOAST NOTIFICATION BANNER
+       ===================================================================== -->
+  <div id="studio-toast" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 z-50 translate-y-24 opacity-0 pointer-events-none transition-all duration-300 px-5 py-3.5 rounded-xl bg-obsidian border border-gold/60 text-ivory text-xs shadow-2xl flex items-center gap-3">
+    <span class="w-2 h-2 rounded-full bg-gold shrink-0"></span>
+    <span id="studio-toast-text">Design saved to your Studio Archive.</span>
+  </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
