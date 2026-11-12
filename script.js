@@ -1874,20 +1874,46 @@
       });
 
       // Booking / Quotation / Consultation Submission Logic
-      function processEnquirySubmission(submissionMode) {
+      function validateEnquiryForm() {
+        const enquiryForm = document.getElementById('booking-enquiry-form');
         const name = document.getElementById('cust-name').value.trim();
         const phone = document.getElementById('cust-phone').value.trim();
         const email = document.getElementById('cust-email').value.trim();
         const date = document.getElementById('cust-date').value;
         const location = document.getElementById('cust-location').value.trim();
+        const completeBrief = [
+          name,
+          phone,
+          email,
+          document.getElementById('cust-category').value.trim(),
+          date,
+          location,
+          document.getElementById('cust-venue-pref').value.trim(),
+          document.getElementById('cust-guests').value.trim(),
+          document.getElementById('cust-budget').value.trim(),
+          document.getElementById('cust-notes').value.trim()
+        ];
         const errorBanner = document.getElementById('form-error-banner');
 
-        if (!name || !phone || !email || !date || !location) {
-          errorBanner.textContent = 'Please complete your Name, Phone/WhatsApp, Email, Event Date, and City/Destination before submitting.';
+        if (completeBrief.some((field) => !field) || !enquiryForm.checkValidity()) {
+          errorBanner.textContent = 'Please complete every field in the enquiry form, including your customisation notes, before submitting.';
           errorBanner.classList.remove('hidden');
-          return;
+          return false;
         }
         errorBanner.classList.add('hidden');
+        return true;
+      }
+
+      function processEnquirySubmission(submissionMode) {
+        if (!validateEnquiryForm()) {
+          return;
+        }
+
+        const name = document.getElementById('cust-name').value.trim();
+        const phone = document.getElementById('cust-phone').value.trim();
+        const email = document.getElementById('cust-email').value.trim();
+        const date = document.getElementById('cust-date').value;
+        const location = document.getElementById('cust-location').value.trim();
 
         const refId = `AL-${Date.now().toString().slice(-6)}`;
         const record = {
@@ -1936,9 +1962,13 @@
 
       // WhatsApp Enquiry Integration
       document.getElementById('whatsapp-enquiry-btn').addEventListener('click', () => {
-        const name = document.getElementById('cust-name').value.trim() || 'Prospective Client';
-        const date = document.getElementById('cust-date').value || 'Flexible Date';
-        const location = document.getElementById('cust-location').value.trim() || 'TBD';
+        if (!validateEnquiryForm()) {
+          return;
+        }
+
+        const name = document.getElementById('cust-name').value.trim();
+        const date = document.getElementById('cust-date').value;
+        const location = document.getElementById('cust-location').value.trim();
         const venuePref = document.getElementById('cust-venue-pref').value;
 
         const message = [
